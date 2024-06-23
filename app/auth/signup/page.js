@@ -17,7 +17,7 @@ const SignupPage = () => {
 
   const handleEmailSignup = async (values) => {
     setLoading(true);
-
+  
     try {
       const response = await fetch("/api/signupAuth", {
         method: "POST",
@@ -26,33 +26,34 @@ const SignupPage = () => {
         },
         body: JSON.stringify(values),
       });
-
-      const text = await response.text(); // Get the response as text
-      console.log("Response text:", text); // Log the response text
-
-      try {
-        const result = JSON.parse(text); // Try to parse the response as JSON
-        if (!response.ok) {
-          throw new Error(result.error || "Signup failed");
-        }
-        message.success("Signed up successfully!");
-        // Optionally, log the user in after signup
-        signIn("credentials", {
-          redirect: false,
-          email: values.email,
-          password: values.password,
-        });
-      } catch (error) {
-        console.error("Failed to parse JSON response:", text);
-        throw new Error("Failed to parse JSON response");
+  
+      // Directly parse the JSON response
+      const result = await response.json();
+      if (!response.ok ) {
+        throw new Error(result.error || "SignUp failed");
       }
+      if (!response.ok && result.message == "User already exists") {
+        throw new Error(result.error || "User already exists");
+      }
+  
+      // Display success message from the response
+      message.success(result.message );
+  
+      // Optionally, log the user in after signup
+      await signIn("credentials", {
+        redirect: false,
+        email: values.email,
+        password: values.password,
+      });
     } catch (error) {
+      // Display error message from the response
       console.error("Signup error:", error);
       message.error(error.message);
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen text-center p-4 bg-background-color text-foreground-color">
