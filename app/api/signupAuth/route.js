@@ -1,0 +1,42 @@
+import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs"; // You can use 'argon2' or 'crypto' if bcryptjs causes issues
+
+const prisma = new PrismaClient();
+
+export async function POST(request) {
+
+
+  try {
+    const { name, email, password } = await request.json();
+
+    // Check if the user already exists
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (existingUser) {
+      return new Response(JSON.stringify({ error: "User already exists" }), { status: 400 });
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create the user
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+      },
+    });
+
+    return new Response(JSON.stringify({ message: "User created successfully", user }), { status: 201 });
+  } catch (error) {
+    console.error("Signup error:", error);
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
+  }
+}
+
+export const config = {
+  runtime: "nodejs", 
+};
