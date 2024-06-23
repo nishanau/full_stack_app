@@ -3,7 +3,7 @@ import React from "react";
 import { TinyColor } from "@ctrl/tinycolor";
 import Link from "next/link";
 import { Button, ConfigProvider, Space } from "antd";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession,  signOut } from "next-auth/react";
 
 // Colors for buttons
 const colors1 = ["#6253E1", "#04BEFE"];
@@ -30,7 +30,7 @@ const Page = () => {
                 Go to Shop
               </Button>
             </Link>
-            <Link href="/profile">
+            <Link href="/user/profile">
               <Button type="default" size="large">
                 View Profile
               </Button>
@@ -64,7 +64,7 @@ const Page = () => {
                 },
               }}
             >
-              <Link href="/login">
+              <Link href="/auth/login">
                 <Button type="primary" size="large">
                   Login
                 </Button>
@@ -88,7 +88,7 @@ const Page = () => {
                 },
               }}
             >
-              <Link href="/signup">
+              <Link href="/auth/signup">
                 <Button type="primary" size="large">
                   Sign Up
                 </Button>

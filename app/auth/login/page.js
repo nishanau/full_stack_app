@@ -108,7 +108,7 @@ const LoginPage = () => {
               type="primary"
               htmlType="submit"
               loading={loading}
-              className="w-full h-12 bg-button-background-color text-button-text-color"
+              className="w-full h-12 bg-button-background-color text-button-text-color text-xl"
             >
               Login
             </Button>
@@ -147,7 +147,7 @@ const LoginPage = () => {
         <div className="mt-4">
           <h1 className="text-foreground-color">
             Don't have an account?{" "}
-            <Link className="text-blue-500 underline" href="/signup">
+            <Link className="text-blue-500 underline" href="/auth/signup">
               Sign Up
             </Link>
           </h1>

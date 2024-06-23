@@ -1,7 +1,7 @@
 // /app/layout.js
 'use client'
 import { useEffect } from 'react';
-import ClientSessionProvider from './ClientSessionProvider';
+import ClientSessionProvider from './components/common/ClientSessionProvider';
 import './globals.css';
 
 function Layout({ children, session }) {
