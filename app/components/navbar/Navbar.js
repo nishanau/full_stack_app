@@ -12,7 +12,7 @@ const Navbar = () => {
   const { data: session } = useSession();
 
   return (
-    <nav className="bg-gray-800 p-4 flex justify-between items-center">
+    <nav className="bg-gray-800 p-4 flex justify-between items-center fixed top-0 w-full z-50">
       <div className="flex items-center space-x-4">
         <Link href="/" className="text-white text-lg font-bold hover:text-gray-300">eCommerce</Link>
         <CategoriesDropdown />

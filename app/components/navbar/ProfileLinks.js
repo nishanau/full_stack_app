@@ -1,13 +1,20 @@
 import React from 'react';
 import Link from 'next/link';
+import { Button } from 'antd';
 import { signOut } from 'next-auth/react';
 
 const ProfileLinks = () => {
   return (
-    <>
-      <Link href="/profile" className="text-white hover:text-gray-300">Profile</Link>
-      <button onClick={() => signOut()} className="text-white hover:text-gray-300">Logout</button>
-    </>
+    <div className="flex space-x-4">
+      <Link href="/profile" passHref>
+        <Button type="link" className="text-white hover:text-gray-300">
+          Profile
+        </Button>
+      </Link>
+      <Button type="link" className="text-white hover:text-red-500" onClick={() => signOut()}>
+        Logout
+      </Button>
+    </div>
   );
 };
 

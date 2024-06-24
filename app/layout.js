@@ -1,10 +1,13 @@
-// /app/layout.js
 'use client'
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import ClientSessionProvider from './components/common/ClientSessionProvider';
+import Navbar from './components/navbar/Navbar';
 import './globals.css';
 
 function Layout({ children, session }) {
+  const pathname = usePathname();
+
   useEffect(() => {
     const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     if (isDarkMode) {
@@ -14,6 +17,12 @@ function Layout({ children, session }) {
     }
   }, []);
 
+  // Define routes where the navbar should not be shown
+  const noNavbarRoutes = ['/auth/login', '/auth/signup'];
+
+  // Check if the current route is one of the routes without a navbar
+  const showNavbar = !noNavbarRoutes.includes(pathname);
+
   return (
     <html lang="en">
       <head>
@@ -21,6 +30,7 @@ function Layout({ children, session }) {
       </head>
       <body>
         <ClientSessionProvider session={session}>
+          {showNavbar && <Navbar />}
           <div>
             {children}
           </div>
