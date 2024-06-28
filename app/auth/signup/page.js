@@ -110,6 +110,7 @@ const SignupPage = () => {
             <Input.Password
               style={{ height: "50px" }}
               className="bg-input-background-color text-input-text-color"
+              autoComplete="new-password" 
             />
           </Form.Item>
           <Form.Item>

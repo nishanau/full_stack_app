@@ -9,7 +9,7 @@ const SearchBar = () => {
         placeholder="Search products..."
         className="rounded-l"
       />
-      <Button type="primary" className="ml-2">
+      <Button type="primary" className="rounded-r ml-2 mr-2">
         Search
       </Button>
     </div>
