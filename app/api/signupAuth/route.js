@@ -45,6 +45,4 @@ export async function POST(request) {
 }
 
 // This ensures that the route runs on the Node.js runtime
-export const config = {
-  runtime: "nodejs", 
-};
+export const runtime = "nodejs";
