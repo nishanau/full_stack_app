@@ -3,9 +3,12 @@ import React, { useState } from "react";
 import { Button, Space, Form, Input, message } from "antd";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const SignupPage = () => {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const [form] = Form.useForm();
 
   const handleGoogleSignup = () => {
     signIn("google");
@@ -17,7 +20,7 @@ const SignupPage = () => {
 
   const handleEmailSignup = async (values) => {
     setLoading(true);
-  
+
     try {
       const response = await fetch("/api/signupAuth", {
         method: "POST",
@@ -26,19 +29,23 @@ const SignupPage = () => {
         },
         body: JSON.stringify(values),
       });
-  
+
       // Directly parse the JSON response
       const result = await response.json();
-      if (!response.ok ) {
-        throw new Error(result.error || "SignUp failed");
-      }
-      if (!response.ok && result.message == "User already exists") {
+      if (!response.ok && result.message === "User already exists") {
         throw new Error(result.error || "User already exists");
       }
-  
+      if (!response.ok) {
+        throw new Error(result.error || "SignUp failed");
+      }
+
+
       // Display success message from the response
-      message.success(result.message );
-  
+      message.success(result.message);
+
+      // Clear the form fields
+      form.resetFields();
+
       // Optionally, log the user in after signup
       await signIn("credentials", {
         redirect: false,
@@ -53,15 +60,20 @@ const SignupPage = () => {
       setLoading(false);
     }
   };
-  
 
   return (
     <div className="flex items-center justify-center min-h-screen text-center p-4 bg-background-color text-foreground-color">
+      <div className="absolute top-4 left-4">
+        <Button type="link" onClick={() => router.push("/")}>
+         Go back to Home
+        </Button>
+      </div>
       <div className="flex flex-col items-center space-y-4 w-full max-w-md">
         <h1 className="text-2xl font-bold text-foreground-color">
           Sign Up for Nishan's eCommerce Platform
         </h1>
         <Form
+          form={form}
           name="signup"
           layout="vertical"
           onFinish={handleEmailSignup}
@@ -110,7 +122,7 @@ const SignupPage = () => {
             <Input.Password
               style={{ height: "50px" }}
               className="bg-input-background-color text-input-text-color"
-              autoComplete="new-password" 
+              autoComplete="new-password"
             />
           </Form.Item>
           <Form.Item>
@@ -119,7 +131,6 @@ const SignupPage = () => {
               htmlType="submit"
               loading={loading}
               className="w-full h-12 bg-button-background-color text-button-text-color text-xl"
-
             >
               Sign Up
             </Button>

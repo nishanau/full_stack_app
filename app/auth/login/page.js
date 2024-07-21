@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Button, Space, Form, Input, message } from "antd";
-import { signIn,getSession } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -16,6 +16,7 @@ const LoginPage = () => {
       setIsClient(true);
     }
   }, []);
+  
   useEffect(() => {
     const checkSession = async () => {
       const session = await getSession();
@@ -23,7 +24,6 @@ const LoginPage = () => {
         router.push("/");
       }
     };
-
     checkSession();
   }, [router]);
 
@@ -57,6 +57,11 @@ const LoginPage = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen text-center p-4 bg-background-color text-foreground-color">
+      <div className="absolute top-4 left-4">
+        <Button type="link" onClick={() => router.push("/")}>
+         Go back to Home
+        </Button>
+      </div>
       <div className="flex flex-col items-center space-y-4 w-full max-w-md">
         <h1 className="text-2xl font-bold text-foreground-color">
           Login to Nishan's eCommerce Platform
