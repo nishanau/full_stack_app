@@ -46,7 +46,7 @@ const LoginPage = () => {
     setLoading(false);
 
     if (result.error) {
-      message.error("Invalid email or password");
+      message.error(result.error);
     } else {
       message.success("Logged in successfully!");
       if (isClient) {

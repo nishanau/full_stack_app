@@ -34,10 +34,13 @@ const handler = NextAuth({
         });
 
         // If no user is found or email is not verified, return null
-        if (!user || !user.emailVerified) {
-          return null;
+        if (!user) {
+          throw new Error("Invalid email or password");
         }
-
+        if (!user.emailVerified) {
+          throw new Error("Please verify your email before logging in.");
+        }
+  
         // Validate password
         const isValid = bcrypt.compareSync(credentials.password, user.password);
 
@@ -45,7 +48,7 @@ const handler = NextAuth({
         if (isValid) {
           return user;
         } else {
-          return null;
+          throw new Error("Invalid email or password");
         }
       },
     }),
@@ -55,7 +58,7 @@ const handler = NextAuth({
   debug: true,
   session: {
     strategy: "jwt",
-    maxAge:  5 * 60, 
+    maxAge: 5 * 60,
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -81,9 +84,39 @@ const handler = NextAuth({
         user.last_name = profile.family_name || profile.name?.split(" ").slice(1).join(" ");
       }
 
-      // Check if the email is verified
-      if (!user.emailVerified) {
-        throw new Error('Please verify your email before logging in.');
+      // Automatically link OAuth accounts to existing email accounts
+      if (account.provider === 'google' || account.provider === 'facebook') {
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email },
+        });
+
+        if (existingUser) {
+          const accountExists = await prisma.account.findFirst({
+            where: {
+              provider: account.provider,
+              providerAccountId: account.providerAccountId,
+              userId: existingUser.id,
+            },
+          });
+
+          if (!accountExists) {
+            await prisma.account.create({
+              data: {
+                userId: existingUser.id,
+                type: account.type,
+                provider: account.provider,
+                providerAccountId: account.providerAccountId,
+                refresh_token: account.refresh_token,
+                access_token: account.access_token,
+                expires_at: account.expires_at,
+                token_type: account.token_type,
+                scope: account.scope,
+                id_token: account.id_token,
+                session_state: account.session_state,
+              },
+            });
+          }
+        }
       }
 
       return true;
